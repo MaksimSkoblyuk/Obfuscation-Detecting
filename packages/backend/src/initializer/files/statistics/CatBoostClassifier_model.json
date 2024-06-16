@@ -1,0 +1,17 @@
+{
+    "name": "CatBoostClassifier_model.pkl",
+    "md5": "e3defcd8810a91c5527cf45f477e8a37",
+    "algorithm": "CatBoostClassifier",
+    "created_at": null,
+    "training_time": null,
+    "training_data_proportion": 0.6,
+    "parameters": {
+        "iterations": 100,
+        "learning_rate": 0.05,
+        "depth": 6
+    },
+    "accuracy": 0.990214,
+    "precision": 0.991601,
+    "recall": 0.988815,
+    "dataset_name": "source.csv"
+}

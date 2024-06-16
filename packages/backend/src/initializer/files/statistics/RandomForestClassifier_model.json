@@ -1,0 +1,17 @@
+{
+    "name": "RandomForestClassifier_model.pkl",
+    "md5": "289253db73767ef07a88574ee81d6ce9",
+    "algorithm": "RandomForest",
+    "created_at": null,
+    "training_time": null,
+    "training_data_proportion": 0.6,
+    "parameters": {
+        "max_depth": 80,
+        "min_samples_leaf": 2,
+        "min_samples_split": 10
+    },
+    "accuracy": 0.983686,
+    "precision": 0.991636,
+    "recall": 0.982299,
+    "dataset_name": "source.csv"
+}

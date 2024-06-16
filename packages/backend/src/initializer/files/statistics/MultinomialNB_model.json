@@ -1,0 +1,15 @@
+{
+    "name": "MultinomialNB_model.pkl",
+    "md5": "3ba9190439f74b9f9b657b558d023acf",
+    "algorithm": "MultinomialNaiveBayes",
+    "created_at": null,
+    "training_time": null,
+    "training_data_proportion": 0.6,
+    "parameters": {
+        "alpha": 1e-05
+    },
+    "accuracy": 0.908204,
+    "precision": 0.984550,
+    "recall": 0.829589,
+    "dataset_name": "source.csv"
+}

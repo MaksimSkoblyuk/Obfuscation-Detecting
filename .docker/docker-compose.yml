@@ -1,0 +1,139 @@
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: "traefik"
+    restart: unless-stopped
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "5000:80"
+    volumes:
+      - traefik_data:/var/run/docker.sock:ro
+    depends_on:
+      - backend
+      - frontend
+
+  backend:
+    image: obfuscation-detecting-backend
+    restart: unless-stopped
+    pull_policy: never
+    build:
+      context: ../packages/backend
+      dockerfile: ../../.docker/DockerfileBackend
+      target: prod
+    command: [ "uvicorn", "src.response.app:app", "--host", "0.0.0.0" ]
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api/v1`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=8000"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - backend_data:/opt/logs
+    depends_on:
+      - worker
+
+  frontend:
+    image: obfuscation-detecting-frontend
+    restart: unless-stopped
+    pull_policy: never
+    build:
+      context: ../packages/frontend
+      dockerfile: ../../.docker/DockerfileFrontend
+      target: prod
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL}
+    depends_on:
+      - backend
+
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO__ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO__SECRET_KEY}
+    volumes:
+      - minio_data:/data
+
+  create_buckets:
+    image: minio/mc
+    entrypoint: >
+      /bin/sh -c "
+        /usr/bin/mc alias set myminio http://minio:9000 ${MINIO__ACCESS_KEY} ${MINIO__SECRET_KEY};
+        /usr/bin/mc mb myminio/${MINIO__PREPROCESSED_DATASETS_BUCKET_NAME};
+        /usr/bin/mc mb myminio/${MINIO__TRAINED_MODELS_BUCKET_NAME};
+        exit 0;
+      "
+    depends_on:
+      - minio
+
+  mongo:
+    image: mongo:5.0
+    restart: unless-stopped
+    volumes:
+      - mongo_db:/data/mongo_db
+      - mongo_configdb:/data/mongo_configdb
+    ports:
+      - "27017:27017"
+
+  worker:
+    command: [ "celery", "-A", "src.worker", "worker", "-l", "INFO" ]
+    pull_policy: never
+    image: obfuscation-detecting-backend
+    env_file:
+      - .env
+    build:
+      context: ../packages/backend
+      dockerfile: ../../.docker/DockerfileBackend
+      target: prod
+    volumes:
+      - worker_data:/opt/logs
+    depends_on:
+      - mongo
+      - minio
+      - create_buckets
+      - redis
+
+  flower:
+    image: mher/flower
+    command: [ "celery", "-b", "redis://redis:6379", "flower" ]
+    restart: unless-stopped
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis_db:/data/redis_db
+    ports:
+      - "6379:6379"
+
+volumes:
+  traefik_data:
+  backend_data:
+  worker_data:
+  minio_data:
+  mongo_db:
+  mongo_configdb:
+  redis_db:

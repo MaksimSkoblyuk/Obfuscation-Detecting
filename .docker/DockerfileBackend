@@ -1,0 +1,28 @@
+FROM mirror.gcr.io/python:3.10-slim-buster as base
+
+ENV WORKDIR /app
+WORKDIR $WORKDIR
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=on \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=60 \
+    PYTHONPATH=$WORKDIR
+
+RUN apt-get update && apt-get install -y libgomp1
+
+COPY poetry.lock pyproject.toml $WORKDIR/
+COPY src $WORKDIR/src
+
+FROM base as dev
+
+RUN python3 -m pip install poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-cache --no-root
+
+FROM base as prod
+
+RUN python3 -m pip install poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-cache --no-root --no-dev

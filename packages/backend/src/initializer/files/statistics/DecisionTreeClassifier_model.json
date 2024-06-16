@@ -1,0 +1,17 @@
+{
+    "name": "DecisionTreeClassifier_model.pkl",
+    "md5": "bca17a5e1221f84aa917cd6ddf635d91",
+    "algorithm": "DecisionTree",
+    "created_at": null,
+    "training_time": null,
+    "training_data_proportion": 0.6,
+    "parameters": {
+        "criterion": "entropy",
+        "max_depth": 20,
+        "min_samples_leaf": 4
+    },
+    "accuracy": 0.991145,
+    "precision": 0.993492,
+    "recall": 0.988819,
+    "dataset_name": "source.csv"
+}

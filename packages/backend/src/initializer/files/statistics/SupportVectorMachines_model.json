@@ -1,0 +1,17 @@
+{
+    "name": "SupportVectorMachines_model.pkl",
+    "md5": "1aa6ae2010091fbf52e299e087afd64f",
+    "algorithm": "SupportVectorMachines",
+    "created_at": null,
+    "training_time": null,
+    "training_data_proportion": 0.6,
+    "parameters": {
+        "C": 0.1,
+        "kernel": "linear",
+        "degree": 3
+    },
+    "accuracy": 0.984624,
+    "precision": 0.992456,
+    "recall": 0.976718,
+    "dataset_name": "source.csv"
+}

@@ -1,0 +1,17 @@
+{
+    "name": "XGBoostClassifier_model.pkl",
+    "md5": "c9fb64d3401fae941d45dbb8322fba53",
+    "algorithm": "XGBoostClassifier",
+    "created_at": null,
+    "training_time": null,
+    "training_data_proportion": 0.6,
+    "parameters": {
+        "n_estimators": 500,
+        "max_depth": 9,
+        "learning_rate": 0.01
+    },
+    "accuracy": 0.992545,
+    "precision": 0.992579,
+    "recall": 0.992545,
+    "dataset_name": "source.csv"
+}

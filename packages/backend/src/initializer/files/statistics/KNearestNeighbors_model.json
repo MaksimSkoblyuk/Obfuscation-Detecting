@@ -1,0 +1,19 @@
+{
+    "name": "KNearestNeighbors_model.pkl",
+    "md5": "9bcc83ae392987812f12b6528e8bcd49",
+    "algorithm": "KNearestNeighbors",
+    "created_at": null,
+    "training_time": null,
+    "training_data_proportion": 0.6,
+    "parameters": {
+        "leaf_size": 30,
+        "metric": "minkowski",
+        "n_neighbors": 5,
+        "p": 2,
+        "weights": "uniform"
+    },
+    "accuracy": 0.962256,
+    "precision": 0.968285,
+    "recall": 0.956205,
+    "dataset_name": "source.csv"
+}

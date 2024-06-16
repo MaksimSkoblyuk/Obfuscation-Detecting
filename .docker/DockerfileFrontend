@@ -1,0 +1,17 @@
+FROM node:18.15.0-alpine as base
+
+ENV WORKDIR /app
+WORKDIR $WORKDIR
+
+COPY package.json package-lock.json .npmrc tsconfig.json $WORKDIR/
+COPY src $WORKDIR/src
+COPY public $WORKDIR/public
+
+FROM base as dev
+RUN npm i
+
+FROM base as prod
+RUN npm ci &&  \
+    npm run build
+
+CMD ["npm", "run", "start"]
